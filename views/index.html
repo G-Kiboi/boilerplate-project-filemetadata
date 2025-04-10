@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
    <head>
       <title>File Metadata</title>
@@ -18,17 +17,40 @@
         </p>
         <div class="view">
           <h3 id="output"></h3>
-          <form enctype="multipart/form-data" method="POST" action="/api/fileanalyse">
-            <input id="inputfield" type="file" name="upfile">
+          <form id="uploadForm" enctype="multipart/form-data" method="POST" action="/api/fileanalyse">
+            <input id="inputfield" type="file" name="upfile" required>
             <input id="button" type="submit" value="Upload">
           </form>
         </div>
       </div>
+
       <div class="footer">
         <p>
           by 
           <a href="http://www.freecodecamp.com">freeCodeCamp</a>
         </p>
       </div>
+
+      <script>
+        // Handle the form submission asynchronously
+        const form = document.getElementById('uploadForm');
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const formData = new FormData(form);
+          const res = await fetch('/api/fileanalyse', {
+            method: 'POST',
+            body: formData
+          });
+
+          const data = await res.json();
+          if (res.ok) {
+            // Display file metadata in the "output" element
+            document.getElementById('output').textContent = `File name: ${data.name}, File type: ${data.type}, File size: ${data.size} bytes`;
+          } else {
+            document.getElementById('output').textContent = 'Error: ' + data.error;
+          }
+        });
+      </script>
    </body>
 </html>
